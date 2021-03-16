@@ -1,0 +1,5 @@
+project(pmp_jie)
+aux_source_directory(./src DIR_SRC)
+add_library(${PROJECT_NAME} ${DIR_SRC})
+target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen optimizer)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
