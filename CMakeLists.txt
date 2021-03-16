@@ -25,3 +25,4 @@ add_subdirectory(optimizer)
 
 #examples
 add_subdirectory(examples/barycentric_mapping)
+add_subdirectory(examples/lscm)
