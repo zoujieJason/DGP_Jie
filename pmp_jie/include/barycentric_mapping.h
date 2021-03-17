@@ -20,9 +20,9 @@ enum WEIGHT_TYPE {
   HARMONIC,
   COTLAPLACE
 };
-Eigen::MatrixXd barycentric_mapping(const cinolib::Trimesh<> &trimesh, const WEIGHT_TYPE &w_type, const Eigen::MatrixXd &bnd_uv);
+Eigen::MatrixXd BaryMapping(const cinolib::Trimesh<> &trimesh, const WEIGHT_TYPE &w_type, const Eigen::MatrixXd &bnd_uv);
 
-Eigen::MatrixXd circle_boundary(const size_t &n, const double &scale=1.0);
+Eigen::MatrixXd CircleBoundary(const size_t &n, const double &scale= 1.0);
 }
 
 

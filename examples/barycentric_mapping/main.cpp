@@ -10,8 +10,8 @@ int main() {
   std::string uv_res = DATA_PATH"/face_uv.obj";
 
   cinolib::Trimesh<> trimesh(file.c_str());
-  const auto uv = barycentric_mapping(trimesh, UNIFORM, circle_boundary(trimesh.get_boundary_vertices().size()));
-  write_uv_to_obj(uv, trimesh.vector_polys(), uv_res);
+  const auto uv = BaryMapping(trimesh, UNIFORM, CircleBoundary(trimesh.get_boundary_vertices().size()));
+  WriteUVToObj(uv, trimesh.vector_polys(), uv_res);
 
   return 1;
 }

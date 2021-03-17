@@ -3,7 +3,7 @@
 //
 #include "../include/least_squares_comformal_maps.h"
 
-Eigen::MatrixXd pmp_jie::lscm(const cinolib::Trimesh<> &trimesh) {
+Eigen::MatrixXd pmp_jie::LSCM(const cinolib::Trimesh<> &trimesh) {
   const auto num_verts = trimesh.num_verts();
   const auto num_polys = trimesh.num_polys();
   const auto num_int_verts = num_verts - 2;
@@ -12,7 +12,7 @@ Eigen::MatrixXd pmp_jie::lscm(const cinolib::Trimesh<> &trimesh) {
   size_t v0id = bnd[0];
   size_t v1id = bnd[1];
   if(v0id > v1id) {
-    pmp_jie::swap(v0id, v1id);
+    pmp_jie::Swap(v0id, v1id);
   }
   const auto v0 = trimesh.vert(v0id);
   const auto v1 = trimesh.vert(v1id);
@@ -67,7 +67,7 @@ Eigen::MatrixXd pmp_jie::lscm(const cinolib::Trimesh<> &trimesh) {
         triplets.emplace_back(pid, 3, -curr_coeff(1) / area);
         triplets.emplace_back(pid + num_polys, 1, curr_coeff(1) / area);
       } else {
-        const int offset = linear_search_offset<size_t>(vec, adj_vid);
+        const int offset = LinearSearchOffset<size_t>(vec, adj_vid);
         assert(offset != -1);
         //real part
         triplets.emplace_back(pid, adj_vid + 4 - offset, curr_coeff(0) / area);
@@ -90,7 +90,7 @@ Eigen::MatrixXd pmp_jie::lscm(const cinolib::Trimesh<> &trimesh) {
   UV.row(v0id) = Eigen::Vector2d(0.0,0.0);
   UV.row(v1id) = Eigen::Vector2d(scale,0.0);
   for(size_t vid = 0; vid < trimesh.num_verts(); ++vid) {
-    const int offset = linear_search_offset<size_t>(vec, vid);
+    const int offset = LinearSearchOffset<size_t>(vec, vid);
     if(offset==-1) continue;
     UV.row(vid) = Eigen::Vector2d(uv(vid+4-offset), uv(vid+4+num_verts-2-offset));
   }

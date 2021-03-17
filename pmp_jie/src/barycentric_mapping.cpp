@@ -2,9 +2,9 @@
 // Created by jie zou on 2021/3/16.
 //
 #include "../include/barycentric_mapping.h"
-Eigen::MatrixXd pmp_jie::barycentric_mapping(const cinolib::Trimesh<> &trimesh,
-                                             const pmp_jie::WEIGHT_TYPE &w_type,
-                                             const Eigen::MatrixXd &bnd_uv) {
+Eigen::MatrixXd pmp_jie::BaryMapping(const cinolib::Trimesh<> &trimesh,
+                                     const pmp_jie::WEIGHT_TYPE &w_type,
+                                     const Eigen::MatrixXd &bnd_uv) {
   const auto num_verts = trimesh.num_verts();
   Eigen::MatrixXd UV;
   UV.setZero(num_verts, 2);
@@ -50,7 +50,7 @@ Eigen::MatrixXd pmp_jie::barycentric_mapping(const cinolib::Trimesh<> &trimesh,
     for(size_t j = 0; j < n_i; ++j) {
       const auto adj_vid = trimesh.adj_v2v(vid)[j];
       if (trimesh.vert_is_boundary(adj_vid)) {
-        bnd_triplets.emplace_back(vmap.at(vid), linear_search<uint>(ordered_bnd_vind, adj_vid), w(j));
+        bnd_triplets.emplace_back(vmap.at(vid), LinearSearch<uint>(ordered_bnd_vind, adj_vid), w(j));
       }
       else {
         int_triplets.emplace_back(vmap.at(vid), vmap.at(adj_vid), w(j));
@@ -63,7 +63,7 @@ Eigen::MatrixXd pmp_jie::barycentric_mapping(const cinolib::Trimesh<> &trimesh,
   Eigen::MatrixXd circle;
   circle.setZero(num_bnd_verts, 2);
   for(size_t i = 0; i < num_bnd_verts; ++i) {
-    circle.row(linear_search<uint>(ordered_bnd_vind, bnd_vind[i])) = bnd_uv.row(i);
+    circle.row(LinearSearch<uint>(ordered_bnd_vind, bnd_vind[i])) = bnd_uv.row(i);
     const size_t vid = bnd_vind[i];
     UV.row(vid) = bnd_uv.row(i);
 //    trimesh.vert(bnd_vind[i]) = cinolib::vec3d(bnd_uv(i,0), bnd_uv(i,1), 0.0);
@@ -78,7 +78,7 @@ Eigen::MatrixXd pmp_jie::barycentric_mapping(const cinolib::Trimesh<> &trimesh,
   B.setFromTriplets(bnd_triplets.begin(), bnd_triplets.end());
 
   Eigen::MatrixXd result;
-  opt::least_squares_solve_ATA(A,-B*circle,result);
+  opt::LeastSquaresSolveATA(A, -B * circle, result);
 
   //Write to uv.
   int_vid = 0;
@@ -91,7 +91,7 @@ Eigen::MatrixXd pmp_jie::barycentric_mapping(const cinolib::Trimesh<> &trimesh,
   }
   return UV;
 }
-Eigen::MatrixXd pmp_jie::circle_boundary(const size_t &n, const double &scale) {
+Eigen::MatrixXd pmp_jie::CircleBoundary(const size_t &n, const double &scale) {
   Eigen::MatrixXd circle;
   circle.setZero(n, 2);
   const double angle(2.0 * M_PI/(double)n);

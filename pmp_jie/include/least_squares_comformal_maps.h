@@ -14,7 +14,7 @@
 
 namespace pmp_jie {
 
-Eigen::MatrixXd lscm(const cinolib::Trimesh<> &trimesh);
+Eigen::MatrixXd LSCM(const cinolib::Trimesh<> &trimesh);
 
 }
 

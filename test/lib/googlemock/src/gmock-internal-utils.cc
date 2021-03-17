@@ -142,7 +142,7 @@ GTEST_API_ bool LogIsVisible(LogSeverity severity) {
 // Prints the given message to stdout if and only if 'severity' >= the level
 // specified by the --gmock_verbose flag.  If stack_frames_to_skip >=
 // 0, also prints the stack trace excluding the top
-// stack_frames_to_skip frames.  In opt mode, any positive
+// stack_frames_to_skip frames.  In pmp_jie mode, any positive
 // stack_frames_to_skip is treated as 0, since we don't know which
 // function calls will be inlined by the compiler and need to be
 // conservative.
@@ -165,7 +165,7 @@ GTEST_API_ void Log(LogSeverity severity, const std::string& message,
   std::cout << message;
   if (stack_frames_to_skip >= 0) {
 #ifdef NDEBUG
-    // In opt mode, we have to be conservative and skip no stack frame.
+    // In pmp_jie mode, we have to be conservative and skip no stack frame.
     const int actual_to_skip = 0;
 #else
     // In dbg mode, we can do what the caller tell us to do (plus one

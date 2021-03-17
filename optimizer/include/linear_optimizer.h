@@ -11,9 +11,9 @@
 #include <Eigen/Sparse>
 
 namespace opt {
-int least_squares_solve_ATA(const Eigen::SparseMatrix<double> &A,
-                            const Eigen::MatrixXd &b,
-                            Eigen::MatrixXd &results);
+int LeastSquaresSolveATA(const Eigen::SparseMatrix<double> &A,
+                         const Eigen::MatrixXd &b,
+                         Eigen::MatrixXd &results);
 }
 
 #endif //DGP_JIE_OPTIMIZER_INCLUDE_LINEAR_OPTIMIZER_H_

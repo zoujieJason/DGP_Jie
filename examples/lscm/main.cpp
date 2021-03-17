@@ -11,8 +11,8 @@ int main() {
   std::string uv_res = DATA_PATH"/lscm_face.obj";
 
   cinolib::Trimesh<> trimesh(file.c_str());
-  const auto uv = lscm(trimesh);
-  write_uv_to_obj(uv, trimesh.vector_polys(), uv_res);
+  const auto uv = LSCM(trimesh);
+  WriteUVToObj(uv, trimesh.vector_polys(), uv_res);
 
   return 1;
 }
