@@ -46,5 +46,6 @@ void Swap(search_t &lhs, search_t &rhs) {
 std::string GetFilePath(const std::string &string);
 std::string GetFileName(const std::string &string, const bool &with_extension);
 std::string GetFileExtension(const std::string &string);
+double GaussValue(const double &x, const double &sigma);
 }
 #endif //DGP_JIE_PMP_JIE_INCLUDE_TOOLS_H_

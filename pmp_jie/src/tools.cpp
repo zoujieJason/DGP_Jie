@@ -37,3 +37,7 @@ std::string pmp_jie::GetFileExtension(const std::string &string) {
   if(pos>=string.size()) return "";
   return string.substr(pos+1);
 }
+double pmp_jie::GaussValue(const double &x, const double &sigma) {
+  const double val = sqrt(2 * M_PI) * sigma;
+  return exp(-1.0 * x * x / sigma / sigma) / val;
+}
