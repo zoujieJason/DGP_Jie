@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+#include "QEM_simplification.h"
+
 class CommonVars: public ::testing::Test {
  protected:
   void SetUp() override {
@@ -15,6 +17,6 @@ class CommonVars: public ::testing::Test {
  std::string str_;
 };
 
-TEST_F(CommonVars, testtest) {
+TEST_F(CommonVars, QEMTest) {
   std::cout << str_ << std::endl;
 }
