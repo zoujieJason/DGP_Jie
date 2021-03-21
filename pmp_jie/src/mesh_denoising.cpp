@@ -96,7 +96,7 @@ double pmp_jie::BilFilter::SolveCurrVertIteration(const Eigen::MatrixXi &tris) {
   }
   const auto error = (verts - verts_).norm();
   //rejust volume
-//  const auto curr_volume = dgp::GetVolume(verts, tris);
+//  const auto curr_volume = pmp_jie::GetVolume(verts, tris);
 //  std::cout << "curr_volume: " << curr_volume << std::endl;
 //  verts_ = (curr_volume / volume_) * verts;
   verts_ = verts;

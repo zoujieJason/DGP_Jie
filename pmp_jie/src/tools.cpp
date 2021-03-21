@@ -41,3 +41,58 @@ double pmp_jie::GaussValue(const double &x, const double &sigma) {
   const double val = sqrt(2 * M_PI) * sigma;
   return exp(-1.0 * x * x / sigma / sigma) / val;
 }
+Eigen::Matrix3d pmp_jie::GetPolyGradientMatrix(const cinolib::Trimesh<> &trimesh,
+                                               const size_t &pid,
+                                               const bool &inv_sign) {
+  Eigen::Matrix3d Q = pmp_jie::GetPolyMatrix(trimesh,pid);
+
+  const Eigen::Vector3d v1 = Q.col(0);
+  Q.col(0) = Q.col(1) - v1;
+  Q.col(1) = Q.col(2) - v1;
+  Q.col(2) = Q.col(0).cross(Q.col(1));
+  Q.col(2) /= Q.col(2).norm();
+
+  if(inv_sign) {
+    return Q.inverse();
+  }
+  else {
+    return Q;
+  }
+}
+Eigen::Matrix3d pmp_jie::GetPolyMatrix(const cinolib::Trimesh<> &trimesh, const size_t &pid) {
+  Eigen::Matrix3d V;
+  V.setZero();
+  int num_col = 0;
+  for(const auto &vidx: trimesh.adj_p2v(pid)) {
+    const Eigen::Map<const Eigen::Vector3d> position(trimesh.vert(vidx).ptr());
+    V.col(num_col) = position;
+    ++num_col;
+  }
+  return V;
+}
+bool pmp_jie::Vec3dIsNan(const Eigen::Vector3d &vert) {
+  if(std::isnan(vert.x()) || std::isnan(vert.y()) || std::isnan(vert.z())) {
+    return true;
+  }
+  return false;
+}
+bool pmp_jie::Vec3dIsInf(const Eigen::Vector3d &vert) {
+  if(std::isinf(vert.x()) || std::isinf(vert.y()) || std::isinf(vert.z())) {
+    return true;
+  }
+  return false;
+}
+Eigen::Vector2d pmp_jie::PlanRotate(const Eigen::Vector2d &vec,
+                                    const double &rotate_angle,
+                                    const bool &counter_click_wise) {
+  Eigen::Matrix2d R;
+  const auto cos_a = std::cos(rotate_angle);
+  const auto sin_a = std::sin(rotate_angle);
+  if(counter_click_wise) {
+    R << cos_a, -sin_a, sin_a, cos_a;
+  }
+  else {
+    R << cos_a, sin_a, -sin_a, cos_a;
+  }
+  return R*vec;
+}
