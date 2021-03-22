@@ -110,7 +110,7 @@ $$
 
 如图所示：
 
-<img src="/Users/jay/Developer/clion-projects/garment_transfer/img/interpenetration.png" alt="interpenetration" style="zoom:50%;" />
+<img src="./../img/interpenetration.png" alt="interpenetration" style="zoom:50%;" />
 
 对衣服上的顶点，以其在目标人体模型的最近点在该点的法向的投影为度量，惩罚相交的节点：
 $$
