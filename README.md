@@ -6,5 +6,7 @@
 
 网格参数化常用在渲染中，例如纹理，法向渲染等。数学描述问题的一般形式为：\\(f:\mathbb{R}^3\rightarrow\mathbb{R}^2\\)
 
-<img src="./img/head.obj.png" src="./img/head.obj.png"/>
-
+<span class='gp-n'>
+    <img src="./img/head.obj.png" width="30%" height="30%"/>
+    <img src="./img/head.obj.png" width="30%" height="30%"/>
+</span>
