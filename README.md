@@ -9,6 +9,6 @@
 网格参数化常用在渲染中，例如纹理，法向渲染等。数学描述问题的一般形式为：\\(f:\mathbb{R}^3\rightarrow\mathbb{R}^2\\)
 
 <img src="https://latex.codecogs.com/png.latex? f:\mathbb{R}^3\rightarrow\mathbb{R}^2">
-
+![](http://latex.codecogs.com/svg.latex?f:\mathbb{R}^3\rightarrow\mathbb{R}^2)
 
 ![head.obj](./img/head.obj.png)
