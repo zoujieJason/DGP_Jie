@@ -3,10 +3,9 @@
 //
 #include "../include/linear_solver.h"
 int opt::LeastSquaresSolve(const Eigen::SparseMatrix<double> &A,
-                               const Eigen::MatrixXd &b,
-                               Eigen::MatrixXd &results) {
-  results.resize(A.cols(), b.cols());
-  results.setZero();
+                           const Eigen::MatrixXd &b,
+                           Eigen::MatrixXd &results) {
+  results.setZero(A.cols(), b.cols());
   Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
   solver.compute(A.transpose() * A);
   if(solver.info()!= Eigen::Success) {
@@ -41,9 +40,9 @@ int opt::LinearBlockSolve(const Eigen::SparseMatrix<double> &invL,
 }
 opt::LinearSolver::LinearSolver()=default;
 int opt::LinearSolver::SetMatrix(const std::vector<Eigen::Triplet<double>> &triplets,
-                                     const int &rows,
-                                     const int &cols,
-                                     const double &coeff) {
+                                 const size_t &rows,
+                                 const size_t &cols,
+                                 const double &coeff) {
   if(A_.rows()==0||A_.cols()==0) {
     A_.resize(cols, cols);
     A_.setZero();
@@ -54,10 +53,10 @@ int opt::LinearSolver::SetMatrix(const std::vector<Eigen::Triplet<double>> &trip
   return 0;
 }
 int opt::LinearSolver::SetMatrix(const std::vector<Eigen::Triplet<double>> &triplets,
-                                     const int &rows,
-                                     const int &cols,
-                                     const double &coeff,
-                                     const Eigen::MatrixXd &constant_mat) {
+                                 const size_t &rows,
+                                 const size_t &cols,
+                                 const double &coeff,
+                                 const Eigen::MatrixXd &constant_mat) {
   if(A_.rows()==0||A_.cols()==0) {
     A_.resize(cols, cols);
     A_.setZero();
@@ -72,7 +71,7 @@ int opt::LinearSolver::SetMatrix(const std::vector<Eigen::Triplet<double>> &trip
   B_ = B_ + coeff * temp_mat_A.transpose() * constant_mat;
   return 0;
 }
-int opt::LinearSolver::Solve(const int &rows, const int &cols, Eigen::MatrixXd &result_mat) {
+int opt::LinearSolver::Solve(const size_t &rows, const size_t &cols, Eigen::MatrixXd &result_mat) {
   assert(A_.cols() == rows && B_.cols() == cols);
   assert(A_.size() != 0 && B_.size() != 0);
   Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;

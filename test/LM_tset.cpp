@@ -2,6 +2,7 @@
 // Created by jie zou on 2021/3/21.
 //
 #include <gtest/gtest.h>
+
 #include <iostream>
 
 #include "test_function.h"
@@ -34,19 +35,18 @@ class CommonVars: public ::testing::Test {
     x0 << 0.5, 0.5, 0.5, 0.5;
   }
   Eigen::VectorXd t, y, x0;
-
 };
 
 TEST_F(CommonVars, QEMTest) {
-  std::cout << "L-M Method Testing: " << std::endl;
-  std::cout << "Problem states: min fTf = ||y-(a*t^3+b*t^2+c*t+d)||^2." << std::endl;
-  TestFunc test_func(&t[0], &y[0], t.size());
-
-  opt::LM_Gauss_Newton lm_gauss_newton(test_func);
-  int num_iter = 100;
-  lm_gauss_newton.solve(&x0[0], test_func, num_iter);
-  std::cout << "Real values: 0.0805069   0.697302 -0.0323877  -0.407608." << std::endl;
-  std::cout << "L-M result : " << x0.transpose() << std::endl;
-
-
+//  Eigen::Vector3d x; x.setConstant(-1.0);
+//  std::cout << x.transpose() << std::endl;
+//  std::cout << "L-M Method Testing: " << std::endl;
+//  std::cout << "Problem states: min fTf = ||y-(a*t^3+b*t^2+c*t+d)||^2." << std::endl;
+//  TestFunc test_func(&t[0], &y[0], t.size());
+//
+//  opt::LM_Gauss_Newton lm_gauss_newton(test_func);
+//  int num_iter = 100;
+//  lm_gauss_newton.solve(&x0[0], test_func, num_iter);
+//  std::cout << "Real values: 0.0805069   0.697302 -0.0323877  -0.407608." << std::endl;
+//  std::cout << "L-M result : " << x0.transpose() << std::endl;
 }

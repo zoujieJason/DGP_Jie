@@ -162,12 +162,12 @@ methods, the parent process will think the calls have never occurred. Therefore,
 you may want to move your `EXPECT_CALL` statements inside the `EXPECT_DEATH`
 macro.
 
-## EXPECT_EQ(htonl(blah), blah_blah) generates weird compiler errors in pmp_jie mode. Is this a googletest bug?
+## EXPECT_EQ(htonl(blah), blah_blah) generates weird compiler errors in opt mode. Is this a googletest bug?
 
 Actually, the bug is in `htonl()`.
 
 According to `'man htonl'`, `htonl()` is a *function*, which means it's valid to
-use `htonl` as a function pointer. However, in pmp_jie mode `htonl()` is defined as
+use `htonl` as a function pointer. However, in opt mode `htonl()` is defined as
 a *macro*, which breaks this usage.
 
 Worse, the macro definition of `htonl()` uses a `gcc` extension and is *not*
@@ -176,7 +176,7 @@ particular, it prevents you from writing `Foo<sizeof(htonl(x))>()`, where `Foo`
 is a template that has an integral argument.
 
 The implementation of `EXPECT_EQ(a, b)` uses `sizeof(... a ...)` inside a
-template argument, and thus doesn't compile in pmp_jie mode when `a` contains a call
+template argument, and thus doesn't compile in opt mode when `a` contains a call
 to `htonl()`. It is difficult to make `EXPECT_EQ` bypass the `htonl()` bug, as
 the solution must work with different compilers on various platforms.
 

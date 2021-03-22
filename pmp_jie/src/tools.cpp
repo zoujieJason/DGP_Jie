@@ -96,3 +96,13 @@ Eigen::Vector2d pmp_jie::PlanRotate(const Eigen::Vector2d &vec,
   }
   return R*vec;
 }
+bool pmp_jie::IsDegenerate(const Eigen::Vector3d &vert) {
+  if(vert(0)==0 && vert(1)==0 && vert(2)==0) return true;
+  if(std::isnan(vert(0))) return true;
+  if(std::isnan(vert(1))) return true;
+  if(std::isnan(vert(2))) return true;
+  if(std::isinf(vert(0))) return true;
+  if(std::isinf(vert(1))) return true;
+  if(std::isinf(vert(2))) return true;
+  return false;
+}

@@ -18,6 +18,7 @@ class ABFPara: public CTriMesh {
 
   int SetVerbose(const bool &verbose);
   int ToAngleSpace(Eigen::VectorXd &alpha);
+  int LinearABF(Eigen::VectorXd &alpha);
 
  protected:
   virtual int UsrAllocateVars() override;
@@ -25,6 +26,8 @@ class ABFPara: public CTriMesh {
   virtual int InitBeta();
   virtual int InitLambda();
   virtual int InitWeight();
+  int InitGamma();
+
 
   int OrganizeInverseLambda();
   int OrganizeInverseLambdaStar();
@@ -39,6 +42,9 @@ class ABFPara: public CTriMesh {
   virtual size_t SetCtri(const size_t &curr_cols, std::vector<Eigen::Triplet<double>> &triplets) const;
   virtual size_t SetCplan(const size_t &curr_cols, std::vector<Eigen::Triplet<double>> &triplets) const;
   virtual size_t SetClen(const size_t &curr_cols, std::vector<Eigen::Triplet<double>> &triplets) const;
+  //TODO: Debug linear ABF.
+  size_t SetLinearClen(const size_t &curr_cols, std::vector<Eigen::Triplet<double>> &triplets) const;
+  size_t SetLinearSolverConstants(Eigen::VectorXd &b) const;
 
   double ProdSinVoplus1(const size_t &vid) const;
   double ProdSinVominus1(const size_t &vid) const;
@@ -61,6 +67,7 @@ class ABFPara: public CTriMesh {
   //angles
   Eigen::VectorXd alpha_;
   Eigen::VectorXd beta_;
+  Eigen::VectorXd gamma_;
   Eigen::VectorXd optimal_angle_weight_;
 
   //lambda
@@ -82,6 +89,9 @@ class ABFPara: public CTriMesh {
   size_t num_cplan_{0};
   size_t num_clen_{0};
   size_t num_constrains_{0};
+
+ private:
+  double GetBoundaryVertAngle(const size_t &vid);
 };
 }
 #endif //DIGITALGEOMETRYPROCESSING_DGP_INCLUDE_ABF_PP_H_

@@ -35,7 +35,7 @@ class Correspond: public pmp_jie::CTriMesh {
 
   int LoadTarget(const std::string &target);
   int Deform(const std::string &mapfile);
-  int WriteDeformedMesh(const std::string &filename_with_path="");
+  int WriteCorrespondMesh(const std::string &filename_with_path= "");
 
  protected:
   int UsrAllocateVars() override;
@@ -69,6 +69,7 @@ class Correspond: public pmp_jie::CTriMesh {
   std::map<size_t, size_t> v2v_;
   std::map<size_t, size_t> p2p_;
   std::map<size_t, double> e2d_;
+
 };
 }
 

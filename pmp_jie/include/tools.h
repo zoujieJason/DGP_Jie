@@ -54,6 +54,7 @@ Eigen::Matrix3d GetPolyGradientMatrix(const cinolib::Trimesh<> &trimesh, const s
 bool Vec3dIsNan(const Eigen::Vector3d &vert);
 bool Vec3dIsInf(const Eigen::Vector3d &vert);
 Eigen::Vector2d PlanRotate(const Eigen::Vector2d &vec, const double &rotate_angle, const bool &counter_click_wise=false);
+bool IsDegenerate(const Eigen::Vector3d &vert);
 
 }
 #endif //DGP_JIE_PMP_JIE_INCLUDE_TOOLS_H_

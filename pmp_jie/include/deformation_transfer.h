@@ -15,15 +15,17 @@ class DeformationTransfer: public pmp_jie::Correspond {
 
   int Transfer(const std::string &file);
 
- private:
+  int WriteDeformedResult(const std::string &filename_with_path="") const;
+
+ protected:
 
   int ReadDeformedTarget(const std::string &file);
-  int WriteDeformedTrimesh(const Eigen::MatrixXd &result) const;
 
   int SetAffineMatrix(Eigen::MatrixXd &affine_matrix) const;
   Eigen::Matrix3d GetPolyAffineMatrix(const size_t &pid) const;
 
   cinolib::Trimesh<> deformed_target_;
+  Eigen::MatrixXd result_;
 
 };
 

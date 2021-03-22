@@ -212,7 +212,7 @@ class GTEST_API_ KilledBySignal {
 
 // EXPECT_DEBUG_DEATH asserts that the given statements die in debug mode.
 // The death testing framework causes this to have interesting semantics,
-// since the sideeffects of the call are only visible in pmp_jie mode, and not
+// since the sideeffects of the call are only visible in opt mode, and not
 // in debug mode.
 //
 // In practice, this can be used to test functions that utilize the
@@ -232,7 +232,7 @@ class GTEST_API_ KilledBySignal {
 //   EXPECT_DEBUG_DEATH(DieInDebugOr12(&sideeffect), "death");
 //
 // #ifdef NDEBUG
-//   // pmp_jie-mode has sideeffect visible.
+//   // opt-mode has sideeffect visible.
 //   EXPECT_EQ(12, sideeffect);
 // #else
 //   // dbg-mode no visible sideeffect.
@@ -242,14 +242,14 @@ class GTEST_API_ KilledBySignal {
 //
 // This will assert that DieInDebugReturn12InOpt() crashes in debug
 // mode, usually due to a DCHECK or LOG(DFATAL), but returns the
-// appropriate fallback value (12 in this case) in pmp_jie mode. If you
-// need to test that a function has appropriate side-effects in pmp_jie
+// appropriate fallback value (12 in this case) in opt mode. If you
+// need to test that a function has appropriate side-effects in opt
 // mode, include assertions against the side-effects.  A general
 // pattern for this is:
 //
 // EXPECT_DEBUG_DEATH({
 //   // Side-effects here will have an effect after this statement in
-//   // pmp_jie mode, but none in debug mode.
+//   // opt mode, but none in debug mode.
 //   EXPECT_EQ(12, DieInDebugOr12(&sideeffect));
 // }, "death");
 //

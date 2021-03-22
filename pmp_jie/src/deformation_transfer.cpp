@@ -14,9 +14,7 @@ int pmp_jie::DeformationTransfer::Transfer(const std::string &file) {
 
   opt::LinearSolver solver;
   solver.SetMatrix(idterm_triplets,idterm_rows,cols,1.0,affine_matrix);
-  Eigen::MatrixXd  result;
-  solver.Solve(cols, 3, result);
-  WriteDeformedTrimesh(result);
+  solver.Solve(cols, 3, result_);
 
   return 0;
 }
@@ -39,11 +37,14 @@ int pmp_jie::DeformationTransfer::SetAffineMatrix(Eigen::MatrixXd &affine_matrix
   return 0;
 }
 Eigen::Matrix3d pmp_jie::DeformationTransfer::GetPolyAffineMatrix(const size_t &pid) const {
-  return pmp_jie::GetPolyGradientMatrix(target_, pid)*pmp_jie::GetPolyGradientMatrix(deformed_target_, pid, false);
+  return pmp_jie::GetPolyGradientMatrix(deformed_target_, pid, false)*pmp_jie::GetPolyGradientMatrix(target_, pid);
 }
-int pmp_jie::DeformationTransfer::WriteDeformedTrimesh(const Eigen::MatrixXd &result) const {
+int pmp_jie::DeformationTransfer::WriteDeformedResult(const std::string &filename_with_path) const {
   const auto filename = GetLoadFilename();
-  const std::string ofile = pmp_jie::GetFilePath(filename)+"deformed_"+pmp_jie::GetFileName(filename, true);
+  std::string ofile = filename_with_path;
+  if(filename_with_path.empty()) {
+    ofile = pmp_jie::GetFilePath(filename)+"deformed_"+pmp_jie::GetFileName(filename, true);
+  }
   std::ofstream file(ofile, std::ofstream::out);
   if(!file.is_open()) {
     std::cout << "OPEN \"" <<  ofile << "\" FAILED." << std::endl;
@@ -51,7 +52,7 @@ int pmp_jie::DeformationTransfer::WriteDeformedTrimesh(const Eigen::MatrixXd &re
   }
 
   for(size_t vid = 0; vid < trimesh_.num_verts(); ++vid) {
-    file << "v " << result(vid,0) << " " << result(vid,1) << " " << result(vid,2) << "\n";
+    file << "v " << result_(vid,0) << " " << result_(vid,1) << " " << result_(vid,2) << "\n";
   }
   for(size_t pid = 0; pid < trimesh_.num_polys(); ++pid) {
     file << "f ";

@@ -204,9 +204,12 @@ size_t pmp_jie::Correspond::SetVaildPointsTerm(std::vector<Eigen::Triplet<double
   }
   return num_verts_;
 }
-int pmp_jie::Correspond::WriteDeformedMesh(const std::string &filename_with_path) {
+int pmp_jie::Correspond::WriteCorrespondMesh(const std::string &filename_with_path) {
   const auto filename = GetLoadFilename();
-  const std::string ofile = pmp_jie::GetFilePath(filename)+"deformed_"+pmp_jie::GetFileName(filename, true);
+  std::string ofile = filename_with_path;
+  if(filename_with_path.empty()) {
+    ofile = pmp_jie::GetFilePath(filename)+"corres_"+pmp_jie::GetFileName(filename, true);
+  }
   std::ofstream file(ofile, std::ofstream::out);
   if(!file.is_open()) {
     std::cout << "OPEN \"" <<  ofile << "\" FAILED." << std::endl;

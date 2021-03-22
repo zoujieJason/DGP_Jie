@@ -396,4 +396,128 @@ int pmp_jie::ABFPara::SetVerbose(const bool &verbose) {
   verbose_ = verbose;
   return 0;
 }
+int pmp_jie::ABFPara::LinearABF(Eigen::VectorXd &alpha) {
+//Least norm problem:
+  // min ||d||^2  s.t Ax=b
+  //Solve:
+  //AATx = b
+  //d = ATx
+
+  //AT
+  std::vector<Eigen::Triplet<double>> triplets;
+  SetCtri(0, triplets);
+  SetCplan(num_ctri_, triplets);
+  SetLinearClen(num_ctri_+num_cplan_, triplets);
+  Eigen::SparseMatrix<double> AT(num_angles_, num_ctri_ + num_cplan_ + num_clen_);
+  AT.setFromTriplets(triplets.begin(), triplets.end());
+  //b
+  Eigen::VectorXd b;
+  SetLinearSolverConstants(b);
+  //solve
+  Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
+  solver.compute(AT.transpose() * AT);
+  if(solver.info()!= Eigen::Success) {
+    std::cerr << "FUNCTION LinearABF: matrix decomposition failed!" <<std::endl;
+  }
+  const auto l = solver.solve(b);
+  if(solver.info()!=Eigen::Success) {
+    std::cerr << "FUNCTION LinearABF: solve failed!" <<std::endl;
+  }
+  const auto d = AT * l;
+  alpha_ = d + beta_;
+  alpha.setZero(num_angles_);
+  alpha = alpha_;
+  return 0;
+}
+size_t pmp_jie::ABFPara::SetLinearClen(const size_t &curr_cols, std::vector<Eigen::Triplet<double>> &triplets) const {
+  for(size_t vid = 0; vid < num_verts_; ++vid) {
+    for(const auto &adj_pid: trimesh_.adj_v2p(vid)) {
+      const auto voplus1 = GetPolyCCWVert(adj_pid, vid);
+      assert(voplus1 != -1);
+      const auto voplus1_aid    = GetAngleId(adj_pid, voplus1);
+      const auto voplus1_radian = beta_(voplus1_aid);
+      triplets.emplace_back(voplus1_aid, curr_cols + vid, std::cos(voplus1_radian) / std::sin(voplus1_radian));
+
+      const auto vominus1 = GetPolyCCWVert(adj_pid, voplus1);
+      assert(vominus1 != -1);
+      const auto vominus1_aid    = GetAngleId(adj_pid,vominus1);
+      const auto vominus1_radian = beta_(vominus1_aid);
+      triplets.emplace_back(vominus1_aid, curr_cols + vid, -std::cos(vominus1_radian) / std::sin(vominus1_radian));
+    }
+  }
+  return num_verts_;
+}
+size_t pmp_jie::ABFPara::SetLinearSolverConstants(Eigen::VectorXd &b) const {
+  b.setZero(num_ctri_ + num_cplan_ + num_clen_);
+  //c_tri
+  for(size_t pid = 0; pid < num_polys_; ++pid) {
+    double sum = 0.0;
+    for(const auto &adj_vid: trimesh_.adj_p2v(pid)) {
+      sum += beta_(GetAngleId(pid, adj_vid));
+    }
+    b(pid) = M_PI - sum;
+  }
+  //c_plan
+  for(size_t vid = 0; vid < num_verts_; ++vid) {
+    double sum = 0.0;
+    for(const auto &adj_pid: trimesh_.adj_v2p(vid)) {
+      sum += beta_(GetAngleId(adj_pid, vid));
+    }
+    b(num_ctri_ + vid) = gamma_(vid) - sum;
+  }
+  //c_len
+  for(size_t vid = 0; vid < num_verts_; ++vid) {
+    const auto lens = GetBVertNeighborLens(vid);
+    const double c = std::log(lens(1)) - std::log(lens(0));
+    double sum = 0.0;
+    for(const auto &adj_pid: trimesh_.adj_v2p(vid)) {
+      const auto voplus1 = GetPolyCCWVert(adj_pid, vid);
+      assert(voplus1 != -1);
+      const auto voplus1_radian = beta_(GetAngleId(adj_pid, voplus1));
+      const double log_sin_voplus1 = std::log(std::sin(voplus1_radian));
+
+      const auto vominus1 = GetPolyCCWVert(adj_pid, voplus1);
+      assert(vominus1 != -1);
+      const auto vominus1_radian = beta_(GetAngleId(adj_pid, vominus1));
+      const double log_sin_vominus1 = std::log(std::sin(vominus1_radian));
+      sum += log_sin_vominus1 - log_sin_voplus1;
+    }
+    b(num_ctri_ + num_cplan_ + vid) = sum + c;
+  }
+  return 0;
+}
+int pmp_jie::ABFPara::InitGamma() {
+  gamma_.setConstant(num_verts_,2.0*M_PI);
+  for(size_t vid = 0; vid < num_verts_; ++vid) {
+    if(trimesh_.vert_is_boundary(vid)) {
+      gamma_(vid) = GetBoundaryVertAngle(vid);
+//      double sum_angle(0.0);
+//      for(const auto &adj_pid: trimesh_.adj_v2p(vid)) {
+//        sum_angle += trimesh_.poly_angle_at_vert(adj_pid, vid);
+//      }
+//      gamma_(vid) = sum_angle;
+    }
+  }
+  return 0;
+}
+double pmp_jie::ABFPara::GetBoundaryVertAngle(const size_t &vid) {
+  size_t lvid(0),rvid(0);
+  GetBVertNeighbor(vid,lvid,rvid);
+  const Eigen::Map<const Eigen::Vector3d> v(trimesh_.vert(vid).ptr());
+  const Eigen::Map<const Eigen::Vector3d> lv(trimesh_.vert(lvid).ptr());
+  const Eigen::Map<const Eigen::Vector3d> rv(trimesh_.vert(rvid).ptr());
+  const auto p = (lv-v).normalized();
+  const auto q = (rv-v).normalized();
+  const Eigen::Vector3d plan_normal(0.0,0.0,1.0);
+  if(!pmp_jie::IsDegenerate(p) && !pmp_jie::IsDegenerate(q)) {
+    const double dot = std::max(-1.0, std::min(1.0, p.dot(q)));
+    double angle = std::acos(dot);
+    assert(!std::isnan(angle));
+    if(p.cross(q).dot(plan_normal)<0) {
+      angle = 2*M_PI - angle;
+    }
+    return angle;
+  }
+  return 0;
+}
 

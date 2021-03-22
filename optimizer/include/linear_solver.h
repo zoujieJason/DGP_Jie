@@ -17,15 +17,15 @@ class LinearSolver {
  public:
   LinearSolver();
   int SetMatrix(const std::vector<Eigen::Triplet<double>> &triplets,
-                 const int &rows,
-                 const int &cols,
-                 const double &coeff);
+                const size_t &rows,
+                const size_t &cols,
+                const double &coeff);
   int SetMatrix(const std::vector<Eigen::Triplet<double>> &triplets,
-                 const int &rows,
-                 const int &cols,
-                 const double &coeff,
-                 const Eigen::MatrixXd &constant_mat);
-  int Solve(const int &rows, const int &cols, Eigen::MatrixXd &result_mat);
+                const size_t &rows,
+                const size_t &cols,
+                const double &coeff,
+                const Eigen::MatrixXd &constant_mat);
+  int Solve(const size_t &rows, const size_t &cols, Eigen::MatrixXd &result_mat);
 
  private:
   Eigen::SparseMatrix<double> A_;
