@@ -4,6 +4,16 @@
 
 ## 网格参数化
 
-网格参数化常用在渲染中，例如纹理，法向渲染等。数学描述问题的一般形式为：$f:\mathbb{R}^3\rightarrow\mathbb{R}^2$
+网格参数化常用在渲染中，例如纹理，法向渲染等。下图从左到右依次为初始网格，Tutte's embedding，LSCM[1]，ABF++[2]的参数化结果。
 
-![head.obj](/Users/jay/Developer/ClionProjects/DGP_Jie/img/head.obj.png)
+<span class='gp-n'>
+    <img src="./img/head.png" width="30%" height="30%"/>
+    <img src="./img/tuttes_head.png" width="30%" height="30%"/> 
+</span><img src="./img/lscm_head.png" width="30%" height="30%"/> <img src="./img/abf_head.png" width="30%" height="30%"/>
+
+## 参考文献
+
+[1]Least squares conformal maps for automatic texture atlas generation;
+
+[2]ABF++: Fast and robust angle based flattening
+
